@@ -1,0 +1,257 @@
+You are an expert full‑stack engineer and creative product designer.
+Build a production‑ready **Next.js 14+ (App Router + TypeScript)** web app called **SelfHelpHub**.
+This is a **local‑first, offline‑friendly PDF library** for reading, organizing, and annotating self‑help books.
+
+The app must be **visually appealing, mobile‑first, and dopamine‑triggering**, using **animations, hover effects, smooth transitions, and modern UI/UX principles**. **No database**; all data stays on the user’s device.
+
+\====================================================================
+🌟 CORE IDEA
+============
+
+SelfHelpHub is designed so **you (the site owner)** can publish and share PDFs you created — original works, concise summaries, and your own guides. The app helps users read, organize, and engage with those PDFs in a delightful, private, local‑first experience.
+
+Key points:
+
+* **Owner‑created content**: The PDFs available on the site are produced by you — originals or summaries of important self‑help books — and you confirm you hold the rights to distribute them.
+* **Local‑first reading**: PDFs can be hosted with the site as static assets (if you opt in) or uploaded by users; reading, annotations, and personal data remain local to each user's device.
+* **Privacy & consent**: If you include PDFs on the site, the onboarding and legal page will clearly explain the source, license, and whether a document is an original or a summary.
+* **No third‑party hosting required**: Works can be served as part of the static site (preferred for owner‑created content) or pinned to the client via drag/drop — but all annotations and personal data remain stored locally in the browser.
+
+\====================================================================
+🎨 DESIGN SYSTEM
+================
+
+* **Framework**: Next.js 14+ (App Router, TypeScript)
+* **Styling**: TailwindCSS + **shadcn/ui** (Radix under the hood)
+* **Animations**: **Framer Motion** (page transitions, cards, modals, reader micro‑interactions)
+* **Icons**: **lucide-react**
+* **Visual style**:
+
+  * Soft gradients (teal, blue, purple) with glassmorphism overlays
+  * Rounded corners (**2xl**), soft shadows, subtle glow focus states
+  * Hover effects: scale, tilt, shimmer on cards and buttons
+  * Micro‑interactions: button ripple, skeleton loaders, progress pulses
+* **Themes**: Dark/Light with smooth transition toggle (system default + LocalStorage)
+* **Responsive**: Mobile‑first layouts; desktop uses grid w/ sidebar
+* **Typography**: modern sans (e.g., Inter/Geist); headings lg/xl; captions sm
+* **Accessibility**: WCAG 2.2 AA, focus rings, ARIA labels, keyboard nav, prefers‑reduced‑motion support
+
+\====================================================================
+📦 PDF ENGINE & FILE HANDLING (LOCAL‑ONLY)
+==========================================
+
+* Use **pdfjs-dist** for rendering PDFs in the browser.
+* Store PDFs in **IndexedDB** (via **localforage**) with chunked upload for large files.
+* Support **drag‑and‑drop** and file picker (multiple). Show upload progress.
+* Allow **import/export** of the library as JSON manifest + optional ZIP of PDFs.
+* Support **cover extraction** (first page render → cached thumbnail).
+* **Full‑text indexing** (client‑side) using **lunr** or **flexsearch** after text extraction with pdf.js; index title/author/tags/notes.
+* **Storage quotas**: detect and show friendly guidance; allow selective purge.
+
+Data model (stored locally):
+
+```ts
+Book: {
+  id: string; // uuid
+  title: string;
+  author?: string;
+  year?: string;
+  tags: string[];
+  description?: string;
+  source?: "uploaded" | "public-domain" | "external-link";
+  license?: string; // optional SPDX or custom note
+  fileId?: string; // IndexedDB key
+  coverThumb?: string; // base64/png cached
+  pages?: number;
+  addedAt: number;
+  lastOpenedAt?: number;
+  progress?: number; // 0..1
+}
+
+Annotation: {
+  id: string;
+  bookId: string;
+  page: number;
+  type: "highlight" | "note" | "bookmark" | "quote";
+  rects?: { x: number; y: number; w: number; h: number; }[]; // for highlights
+  text?: string; // selection / note body
+  createdAt: number;
+  color?: string; // optional highlight color
+}
+
+Settings: {
+  theme: "light" | "dark" | "system";
+  onboardingComplete: boolean;
+  reader: { zoom: number; spread: "single" | "double"; lineHeight: number; tts: boolean };
+  region?: string; // for legal resources/links
+}
+```
+
+\====================================================================
+📱 UX PRINCIPLES
+================
+
+* **Mobile first**: one‑hand navigation; sticky bottom actions in reader
+* **Engaging**: emoji accents, soft gradients, confetti for milestones (e.g., finished a book)
+* **Simple**: card‑based library; quick filters; big buttons; empty states with illustrations
+* **Empathetic**: friendly copy; non‑judgmental progress and streaks
+
+\====================================================================
+⚙️ STORAGE (NO DATABASE)
+========================
+
+* **IndexedDB (localforage)**: PDFs, metadata, annotations, search index, covers
+* **LocalStorage**: theme, onboarding, view prefs
+* **Features**:
+
+  * Export/Import: JSON manifest (+ optional ZIP of PDFs)
+  * "Delete All Data" with confirmation modal
+  * Auto‑cleanup tool (delete large/unused files after X days, user‑controlled)
+  * Size meter (est. MB used)
+
+\====================================================================
+📂 PAGES & ROUTES
+=================
+
+* `/` → **Landing Page** (hero, features, compliance note, CTA: "Open Library")
+* `/library` → Grid/list of books with filters, search, sort
+* `/book/[id]` → Book details (cover, metadata, progress, actions)
+* `/read/[id]` → **Reader** (pdf.js canvas), annotations panel, TTS
+* `/collections` → Smart & custom shelves (e.g., Favorites, Unread, By Tag)
+* `/highlights` → All quotes/highlights across books; copy/share/export
+* `/settings` → Theme, storage, data export/import/delete, region selector
+* `/about` → Project info, privacy, and **/legal** (copyright/disclaimer/DMCA)
+
+Optional server routes (edge/runtime: nodejs):
+
+* `/api/og` → Generate dynamic OpenGraph images for book pages (no DB)
+
+\====================================================================
+🧩 COMPONENTS (ANIMATED & RESPONSIVE)
+=====================================
+
+**Landing Page**
+
+* `<LandingHero />` → Gradient background, animated headline, shimmering CTA
+* `<FeatureCards />` → Tilt/scale on hover; icons pulse
+* `<ComplianceBanner />` → Subtle warning icon, slide‑in, link to /legal
+* `<Footer />` → Minimal links (About, Legal, Settings)
+
+**Library**
+
+* `<LibraryToolbar />` → Search (debounced), tag chips, sort dropdown
+* `<BookCard />` → Cover with hover lift, progress ring, quick actions (⭐, 📌)
+* `<EmptyState />` → Drag‑and‑drop area with animation
+
+**Book Details**
+
+* `<BookMeta />` → Title, author, tags, license badge
+* `<ActionBar />` → Read, Favorite, Export, Delete
+* `<StatsRow />` → Pages, time spent, progress bar
+
+**Reader**
+
+* `<ReaderCanvas />` → pdf.js canvas with smooth zoom & page transitions
+* `<ReaderControls />` → Bottom bar: prev/next, zoom, page jump, TTS toggle
+* `<AnnotationLayer />` → Select text to highlight; add notes; quick bookmark button
+* `<SidePanel />` → Tabs: Thumbnails • Highlights • Notes • Search in book
+* `<MiniTOC />` → Outline if available; animated progress indicator
+
+**Highlights & Quotes**
+
+* `<HighlightList />` → Group by book; copy/share; export selected to Markdown
+
+**Settings**
+
+* `<DataControls />` → Export/Import/Delete with animated dialogs
+* `<ThemeToggle />` → Sun/Moon rotation; store in LocalStorage
+* `<StorageMeter />` → IndexedDB usage with progress bar
+
+\====================================================================
+🔍 SEARCH & DISCOVERY (LOCAL)
+=============================
+
+* Global search bar (Ctrl/Cmd+K) using **cmdk** style palette
+* Index: title, author, tags, description, extracted text
+* Filters: tags, source, year, progress (Unread/Started/Finished)
+* Sort: Recently added, Title A→Z, Author, Most opened
+
+\====================================================================
+🗣️ READING EXPERIENCE EXTRAS
+=============================
+
+* **Text‑to‑Speech** via Web Speech API (toggle; highlight current sentence)
+* **Auto‑save reading position** per book
+* **Reading streaks** (local, optional confetti on milestones)
+* **Keyboard shortcuts**: J/K or ←/→ page nav; +/- zoom; B bookmark
+* **Shareable quotes**: render quote cards (Canvas) as PNG (client‑side)
+
+\====================================================================
+🛡️ LEGAL & COMPLIANCE (MUST‑HAVE)
+==================================
+
+Because this app will host PDFs you create (original works and summaries), the legal and compliance UX will be tailored accordingly:
+
+* **Owner‑created content policy**: A visible badge on each book will indicate: "Owner created — original/summary" along with a short license statement you provide (e.g., CC0, CC BY, Proprietary).
+* **User clarity**: The landing page and onboarding will explicitly state which PDFs are authored by the site owner and which are uploaded by users, so readers know the source and permissions.
+* **Respect for IP**: For any documents not authored by you, the app will encourage users to upload only content they have rights to share. The upload flow includes a simple confirmation checkbox "I confirm I have the rights to share this document." This helps limit accidental infringement.
+* **Compliance page**: `/legal` will contain the upload policy, owner license statements, a DMCA/contact template, and guidance for taking down content that is reported. If you host owner files as static assets, include a clear license field per file in the repo.
+* **Privacy**: Annotations, highlights, reading progress, and all personal data remain stored locally in the user's browser (IndexedDB/LocalStorage). The site does not collect personal reading data by default.
+
+**Important**: While SelfHelpHub is designed to host owner‑created PDFs and summaries, always ensure you have the necessary rights to publish the content. The app will include clear UI elements explaining this to readers and uploaders.
+
+\====================================================================
+🛠️ IMPLEMENTATION DETAILS
+==========================
+
+* **Packages**: `pdfjs-dist`, `localforage`, `framer-motion`, `lucide-react`, `@radix-ui/react-*`, `cmdk`, `zod`, `idb-keyval` (optional), `flexsearch` or `lunr`, `file-saver`, `jszip`
+* **State**: React Context + hooks; persist with IndexedDB/LocalStorage
+* **MDX**: Use MDX for About/Legal content blocks where helpful
+* **PWA**: Next PWA setup (service worker, offline cache for UI shell; PDFs remain in IndexedDB)
+* **File sizes**: Chunked read/write; show humanized sizes; handle quota errors
+* **Perf**: Lazy‑load pdf.js and worker; virtualize page list; cache covers
+* **Theming**: `next-themes` for dark/light toggle
+* **Typesafety**: Use `zod` schemas for manifests and settings
+
+\====================================================================
+📂 ONBOARDING FLOW
+==================
+
+1. Welcome screen → privacy‑first message
+2. Add your first PDFs (drag‑drop or pick) → progress animation
+3. Tag & organize (suggested tags: Productivity, CBT, Mindfulness, Habits)
+4. Start reading → quick tutorial (tooltips over controls)
+
+\====================================================================
+🚀 DEPLOYMENT
+=============
+
+* Deploy on **Vercel**
+* No database or server‑side storage
+* Optional only: `/api/og` for OG images (no user data)
+* PWA enabled for offline shell
+
+\====================================================================
+✅ ACCEPTANCE CRITERIA
+=====================
+
+* Works **without a database**; all user data stored locally
+* Landing page is visually stunning and animated
+* Mobile‑first, responsive, accessible (WCAG 2.2 AA)
+* PDF reader supports zoom, page nav, thumbnails, search in document
+* Annotations: highlights, notes, bookmarks (create/edit/delete)
+* Library: add/remove, tag, search, sort, progress tracking
+* Data: export/import/delete‑all; storage meter; quota handling
+* Legal: compliance banner + /legal page; license badges per book
+* PWA: app shell works offline; reader usable without network once PDFs loaded
+
+\====================================================================
+📋 BONUS IDEAS (OPTIONAL)
+=========================
+
+* Smart shelves: "15‑Minute Reads", "Newly Added", "Most Highlighted"
+* Reading goals: minutes/day with gentle reminders (local notifications)
+* Quote cards with gradient backgrounds and book covers
+* Simple CSV import of metadata; ISBN autofill via pasted text (no network calls by default)
+
+⚡ With this master prompt, Cursor will build you a fully animated, mobile‑responsive, visually engaging Next.js PDF library — with zero database, 100% local‑first, and strong copyright compliance.
