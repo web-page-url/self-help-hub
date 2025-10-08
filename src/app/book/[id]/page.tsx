@@ -106,7 +106,7 @@ export default function BookDetailsPage() {
           <BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Book not found</h2>
           <p className="text-muted-foreground mb-6">
-            The book you're looking for doesn't exist or has been removed.
+            The book you&apos;re looking for doesn&apos;t exist or has been removed.
           </p>
           <Button asChild>
             <Link href="/library">
@@ -222,7 +222,7 @@ export default function BookDetailsPage() {
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Book</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Are you sure you want to delete "{book.title}"? This action cannot be undone
+                          Are you sure you want to delete &ldquo;{book.title}&rdquo;? This action cannot be undone
                           and will remove the book and all its annotations from your library.
                         </AlertDialogDescription>
                       </AlertDialogHeader>

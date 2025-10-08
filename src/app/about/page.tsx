@@ -256,7 +256,7 @@ export default function AboutPage() {
                         Your Data is Yours
                       </h4>
                       <p className="text-green-800 dark:text-green-200 text-sm">
-                        SelfHelpHub doesn't collect, store, or share any personal information.
+                        SelfHelpHub doesn&apos;t collect, store, or share any personal information.
                         All your reading data stays on your device.
                       </p>
                     </div>
@@ -265,7 +265,7 @@ export default function AboutPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold mb-3">What We Don't Do</h4>
+                    <h4 className="font-semibold mb-3">What We Don&apos;t Do</h4>
                     <ul className="space-y-2 text-sm text-muted-foreground">
                       <li>• No user accounts or sign-ups</li>
                       <li>• No tracking or analytics</li>

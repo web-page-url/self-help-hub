@@ -491,7 +491,7 @@ function AnnotationCard({
 
           {annotation.text && (
             <blockquote className="text-sm leading-relaxed mb-3 italic">
-              "{annotation.text}"
+              &ldquo;{annotation.text}&rdquo;
             </blockquote>
           )}
 

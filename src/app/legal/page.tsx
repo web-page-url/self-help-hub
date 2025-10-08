@@ -206,7 +206,7 @@ export default function LegalPage() {
                         Privacy First
                       </h4>
                       <p className="text-green-800 dark:text-green-200 text-sm">
-                        Your reading data never leaves your device. We don't collect, store, or share any personal information.
+                        Your reading data never leaves your device. We don&apos;t collect, store, or share any personal information.
                       </p>
                     </div>
                   </div>
@@ -243,7 +243,7 @@ export default function LegalPage() {
                   <div>
                     <h4 className="font-semibold mb-2">3. Service Availability</h4>
                     <p className="text-sm text-muted-foreground">
-                      SelfHelpHub is provided "as is" and may be modified or discontinued at any time. Your data remains accessible through standard browser tools.
+                      SelfHelpHub is provided &ldquo;as is&rdquo; and may be modified or discontinued at any time. Your data remains accessible through standard browser tools.
                     </p>
                   </div>
 

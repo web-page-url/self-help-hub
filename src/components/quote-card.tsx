@@ -132,7 +132,7 @@ export function QuoteCard({ annotation, book, onClose }: QuoteCardProps) {
       ctx.font = `italic 28px ${fonts[selectedFont as keyof typeof fonts]}`
       const words = annotation.text.split(' ')
       let line = ''
-      let lines: string[] = []
+      const lines: string[] = []
 
       for (const word of words) {
         const testLine = line + word + ' '

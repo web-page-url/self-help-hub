@@ -759,7 +759,7 @@ export default function PDFReaderPage() {
                       .filter(a => a.type === 'highlight')
                       .map(annotation => (
                         <div key={annotation.id} className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border-l-4 border-yellow-400">
-                          <p className="text-sm mb-2">"{annotation.text}"</p>
+                          <p className="text-sm mb-2">&ldquo;{annotation.text}&rdquo;</p>
                           <div className="flex items-center justify-between text-xs text-muted-foreground">
                             <span>Page {annotation.page}</span>
                             <Button
@@ -847,7 +847,7 @@ export default function PDFReaderPage() {
             {selectedText && (
               <div className="p-3 bg-muted rounded-lg">
                 <p className="text-sm font-medium mb-2">Selected text:</p>
-                <p className="text-sm text-muted-foreground">"{selectedText}"</p>
+                <p className="text-sm text-muted-foreground">&ldquo;{selectedText}&rdquo;</p>
               </div>
             )}
 

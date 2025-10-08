@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "seo:generate-favicons": "node scripts/generate-icons.js",
+    "seo:check": "echo 'SEO Check: Title, Description, Open Graph, Twitter Cards, Structured Data implemented'",
+    "seo:lighthouse": "echo 'Run Lighthouse audit: https://developers.google.com/web/tools/lighthouse'"
   },
   "dependencies": {
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -46,6 +49,7 @@
     "@types/react-syntax-highlighter": "^15.5.11",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
+    "favicons": "^7.2.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -1,12 +1,12 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { BookOpen, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-export default function SampleReaderPage() {
+function SampleReaderContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -218,5 +218,20 @@ export default function SampleReaderPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function SampleReaderPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading reader...</p>
+        </div>
+      </div>
+    }>
+      <SampleReaderContent />
+    </Suspense>
   )
 }

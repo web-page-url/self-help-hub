@@ -191,7 +191,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                 ) : results.length === 0 && query ? (
                   <div className="p-8 text-center">
                     <Search className="w-6 h-6 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-muted-foreground">No results found for "{query}"</p>
+                    <p className="text-muted-foreground">No results found for &ldquo;{query}&rdquo;</p>
                   </div>
                 ) : (
                   <AnimatePresence>
